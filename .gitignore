@@ -1,0 +1,5 @@
+
+# Ignore build outputs
+build/
+Build/
+DerivedData/
