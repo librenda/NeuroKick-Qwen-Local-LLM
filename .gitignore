@@ -1,5 +1,46 @@
+# macOS
+.DS_Store
 
-# Ignore build outputs
+# Xcode
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+*.xcuserdatad/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM/
+*.xcscheme
+xcuserdata/
+*.swiftpm/
+
+# Build artifacts
 build/
 Build/
 DerivedData/
+
+# Dependency managers
+Carthage/
+Pods/
+.bundle/
+
+# Local LLM / Model Weights (Crucial!)
+*.bin
+*.gguf
+*.pt
+*.safetensors
+# Also consider ignoring Ollama's default model cache, though it's typically outside the project:
+# ~/.ollama/
+
+# Environment variables
+.env*
+
+# Secrets
+*.pem
+*.key
+
+# IDE / Tooling
+.vscode/
+.idea/
+
+# Logs
+*.log

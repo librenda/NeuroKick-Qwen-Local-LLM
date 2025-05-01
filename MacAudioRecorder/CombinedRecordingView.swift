@@ -52,8 +52,6 @@ struct CombinedRecordingView: View {
     // Environment variable to control the view's presentation state (for dismissing the sheet)
     @Environment(\.presentationMode) var presentationMode
 
-    @AppStorage("deepseek_api_key") private var savedApiKey: String = ""
-
     // StateObject for the combined audio engine
     @StateObject private var combinedEngine = CombinedAudioEngine()
     // Transcriber + View-Model
@@ -67,7 +65,7 @@ struct CombinedRecordingView: View {
     init() {
         let t = WhisperTranscriber()
         _transcriber = StateObject(wrappedValue: t)
-        _viewModel = StateObject(wrappedValue: TranscriptionViewModel(transcriber: t))
+        _viewModel = StateObject(wrappedValue: TranscriptionViewModel(transcriber: t, localLLMService: LocalLLMService.shared))
     }
 
     var body: some View {
@@ -140,30 +138,27 @@ struct CombinedRecordingView: View {
                 }
 
                 // DeepSeek analysis controls
-                VStack(alignment: .leading, spacing: 8) {
-                    SecureField("DeepSeek API Key", text: Binding(
-                        get: { viewModel.apiKey },
-                        set: { viewModel.apiKey = $0 }
-                    ))
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .foregroundColor(.black) // ensure dots appear black
+                HStack {
+                    Button("Workplace Analysis") {
+                        viewModel.analyze()
+                    }
+                    .applyButtonStyling(color: .blue)
+                    .disabled(viewModel.isAnalyzing || viewModel.transcript.isEmpty)
 
-                    HStack {
-                        Button("Workplace Analysis") {
-                            viewModel.analyze()
-                        }
-                        .applyButtonStyling(color: .blue)
-                        .disabled(viewModel.isAnalyzing || viewModel.transcript.isEmpty || viewModel.apiKey.isEmpty)
+                    Button("General Summary") {
+                        viewModel.summarize()
+                    }
+                    .applyButtonStyling(color: .purple)
+                    .disabled(viewModel.isAnalyzing || viewModel.transcript.isEmpty)
 
-                        Button("General Summary") {
-                            viewModel.summarize()
-                        }
-                        .applyButtonStyling(color: .purple)
-                        .disabled(viewModel.isAnalyzing || viewModel.transcript.isEmpty || viewModel.apiKey.isEmpty)
+                    Button("Behavioural Analysis") {
+                        viewModel.behavioralAnalyze()
+                    }
+                    .applyButtonStyling(color: .green)
+                    .disabled(viewModel.isAnalyzing || viewModel.transcript.isEmpty)
 
-                        if viewModel.isAnalyzing {
-                            ProgressView()
-                        }
+                    if viewModel.isAnalyzing {
+                        ProgressView()
                     }
                 }
 
@@ -206,10 +201,6 @@ struct CombinedRecordingView: View {
         }
         .onAppear {
             combinedEngine.transcriber = transcriber
-            viewModel.apiKey = savedApiKey // populate from storage
-        }
-        .onChange(of: viewModel.apiKey) { newKey in
-            savedApiKey = newKey // persist
         }
     }
 
