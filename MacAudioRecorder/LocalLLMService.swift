@@ -64,7 +64,7 @@ struct LocalLLMService {
 
     // MARK: – Private helpers
     private let endpoint = URL(string: "http://127.0.0.1:11434/api/chat")!
-    private let model    = "gemma:2b"
+    private let model    = "qwen3:4b" // "gemma:2b"
 
     private func chat(messages: [Message]) async throws -> String {
         var request = URLRequest(url: endpoint)
