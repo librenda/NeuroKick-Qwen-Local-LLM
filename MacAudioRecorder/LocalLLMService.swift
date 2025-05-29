@@ -1,11 +1,16 @@
 import Foundation
 
+// Brenda: The following codefile is a smart office assistant.
+// Brenda: a smart office assistant that can read workplace conversations and give you professional insights. It's like having an HR expert who can analyze how managers and employees talk to each other and give advice on improving workplace relationships.
+
+// Main container: (Brenda)
 /// Lightweight wrapper around a local Ollama-compatible LLM endpoint (e.g. `ollama serve`) running
-/// Gemma-2B Q4_K_M. The request/response schema matches Ollama's `/api/chat` route which is mostly
+/// qwen3:4b or Gemma-2B Q4_K_M. The request/response schema matches Ollama's `/api/chat` route which is mostly
 /// OpenAI-compatible but returns a single `message` object instead of `choices`.
 @available(macOS 12.0, *)
 struct LocalLLMService {
-    static let shared = LocalLLMService()
+    // Brenda: static let shared part means there's only one copy of this assistant.
+    static let shared = LocalLLMService() // Brenda's notes: single, shared office assistant that everyone in your company can use (one copy, everyone accesses the same one - like having one HR consultant for whole company)
 
     // MARK: – Public
     func analyze(text: String) async throws -> String {
@@ -88,7 +93,7 @@ struct LocalLLMService {
     private struct RequestBody: Codable {
         let model: String
         let messages: [Message]
-        let stream: Bool
+        let stream: Bool // Brenda: gets answer all at once.
     }
 
     private struct Message: Codable {
@@ -102,5 +107,17 @@ struct LocalLLMService {
             let content: String
         }
         let message: Message
+
+        // The following modifications are by Brenda:
+
+        // Optional fields
+        let model: String?
+        let done: Bool?
+    
+        // Performance tracking (probably overkill)
+        let total_duration: Int?
+        let eval_count: Int?
+        let created_at: String?
+        let done_reason: String?
     }
 }
