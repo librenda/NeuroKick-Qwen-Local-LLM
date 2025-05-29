@@ -121,3 +121,24 @@ struct LocalLLMService {
         let done_reason: String?
     }
 }
+
+extension LocalLLMService {
+    func analyzeManagerBehavior(conversation: String) async throws -> String {
+        let promptBuilder = PromptBuilder()
+        let systemPrompt = promptBuilder.buildSystemPrompt()
+        
+        let userPrompt = """
+        Analyze the following manager-employee conversation. Be thorough but concise.
+        
+        CONVERSATION:
+        \(conversation)
+        
+        Please provide your analysis following the specified format.
+        """
+        
+        return try await chat(messages: [
+            .init(role: "system", content: systemPrompt),
+            .init(role: "user", content: userPrompt)
+        ])
+    }
+}
