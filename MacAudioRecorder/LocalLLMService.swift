@@ -339,7 +339,7 @@ struct LocalLLMService {
         var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 300 // 5 minutes timeout
+        request.timeoutInterval = 800 // 300 - 5 minutes timeout; 800 - 13 minutes
 
         let body = RequestBody(model: model, messages: messages, stream: false)
         request.httpBody = try JSONEncoder().encode(body)

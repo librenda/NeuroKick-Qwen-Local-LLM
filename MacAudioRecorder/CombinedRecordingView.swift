@@ -162,6 +162,100 @@ struct CombinedRecordingView: View {
                     }
                 }
 
+                // Brenda - New code for TEST:
+
+                // Test Input Section
+                VStack(spacing: 12) {
+                    // Header with clear button
+                    HStack {
+                        Text("Test Analysis")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                        
+                        Spacer()
+                        
+                        if !viewModel.testInput.isEmpty {
+                            VStack(spacing: 8) {
+                                ScrollView {
+                                    Button(action: { viewModel.testInput = "" }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .help("Clear input")
+
+                                    Button {
+                                        saveSummary()
+                                    } label: {
+                                        Label("Save Summary", systemImage: "square.and.arrow.down")
+                                            .frame(minWidth: 120)
+                                    }
+                                    .applyButtonStyling(color: .green)
+                                }
+                            }
+                        }
+    
+                    }
+                    
+                    // Text input
+                    TextEditor(text: $viewModel.testInput)
+                        .frame(height: 100)
+                        .padding(8)
+                        .background(Color.white.opacity(0.8))
+                        .cornerRadius(8)
+                        .foregroundColor(.black)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                        )
+                        .disabled(viewModel.isAnalyzing)
+                        .overlay(
+                            Group {
+                                if viewModel.testInput.isEmpty {
+                                    Text("Paste or type text to analyze...")
+                                        .foregroundColor(.secondary)
+                                        .padding(12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                            },
+                            alignment: .topLeading
+                        )
+                    
+                    // Add the HStack with Picker and Analyze button here
+                    HStack(spacing: 12) {
+                        Picker("Analysis Type", selection: $viewModel.selectedAnalysisType) {
+                            ForEach(TranscriptionViewModel.AnalysisType.allCases) { type in
+                                Text(type.rawValue).tag(type)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(width: 200)
+                        .disabled(viewModel.isAnalyzing)
+                        
+                        Button(action: {
+                            Task { await viewModel.analyzeTextInput() }
+                        }) {
+                            HStack {
+                                if viewModel.isAnalyzing {
+                                    ProgressView()
+                                        .scaleEffect(0.8)
+                                        .padding(.trailing, 4)
+                                }
+                                Text(viewModel.isAnalyzing ? "Analyzing..." : "Analyze Text")
+                            }
+                            .frame(minWidth: 120)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(viewModel.testInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || 
+                                viewModel.isAnalyzing)
+                    }
+                    
+        
+                }
+                .padding()
+                .glassEffect()
+                // Brenda - End of New code for TEST.
+
                 // Summary output
                 if !viewModel.summary.isEmpty {
                     VStack(spacing: 8) {

@@ -1,0 +1,16 @@
+cat > test_behavioral_analysis.json << 'EOF'
+{
+  "model": "qwen3:4b",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the \"Multiplier–Diminisher Diagnostic Assistant,\" entrusted with producing rigorous, zero-error evaluations of managerial behavior using the provided Diagnostic Checklist. [Previous system content remains the same...]"
+    },
+    {
+      "role": "user",
+      "content": "[Previous user instructions remain the same...]\n\nConversation:\n[00:31] Mike: \"Abigail, as you know, it's that time of year when we do performance reviews.\"\n[00:33] Abigail: \"Yes, I know.\"\n[00:35] Mike: \"Well, let me get right to the point: your attendance is, quite frankly, just not acceptable. You've been late over a dozen times, you've maxed out all your PTO, and your co-workers say you're often difficult to communicate with.\"\n[00:51] Abigail: \"I've had good reason for being out of the office, and I provided HR with a note from my therapist for the days that I was out.\"\n[00:52] Mike: \"That may be, but on my team everyone has to pull their own weight.\"\n[01:10] Mike: \"If I allow you to be late, it's not fair to the others. Now, as you know, we have performance objectives that we need to meet in the Claim Services department. Everybody has to do their part.\"\n[01:31] Abigail: \"Well, if you just give me a chance and let me work from home, I promise I can do better. I struggle with distractions in the office, but at home I can concentrate, take breaks when I need to, and work when I feel my best.\"\n[01:53] Mike: \"This is a team-based environment, Abigail. If I let you work from home, then I have to let everybody else.\"\n[02:00] Abigail: \"My therapist said I need to reduce my stress level and manage things differently. Nora, my last supervisor, was really good about helping me out—she knew sometimes I had to come in late because of medication side effects.\"\n[02:14] Mike: \"Well, that was Nora. On my team there's no special treatment; everybody has to meet the same standards. I run a tight ship.\"\n[02:16] Abigail: \"Are you going to fire me?\"\n[02:18] Mike: \"I'm putting you on a Performance Improvement Plan. Here's a copy of the written warning. I need you to sign and acknowledge what we've discussed and that you understand our attendance policies. If you cannot meet these standards, you will be terminated.\""
+    }
+  ],
+  "stream": false
+}
+EOF
