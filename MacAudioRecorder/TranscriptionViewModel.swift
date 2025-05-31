@@ -76,4 +76,5 @@ final class TranscriptionViewModel: ObservableObject {
             isAnalyzing = false
         }
     }
+    
 }
