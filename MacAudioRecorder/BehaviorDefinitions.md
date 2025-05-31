@@ -1,3 +1,5 @@
+import Foundation
+
 // MARK: - Behavior Types
 enum BehaviorType: String, CaseIterable {
     case multiplier = "Multiplier"
@@ -12,6 +14,8 @@ protocol Behavior {
     var definition: String { get }
     var examples: [String] { get }
     var implications: String { get }
+    var signalPhrases: [String] { get }
+    var keyIndicators: [String] { get }
 }
 
 // MARK: - Multiplier Behaviors
@@ -22,6 +26,8 @@ struct MultiplierBehavior: Behavior {
     let examples: [String]
     let implications: String
     let diminisherCounterpart: String
+    let signalPhrases: [String]
+    let keyIndicators: [String]
 }
 
 // MARK: - Diminisher Behaviors
@@ -32,6 +38,8 @@ struct DiminisherBehavior: Behavior {
     let examples: [String]
     let implications: String
     let multiplierCounterpart: String
+    let signalPhrases: [String]
+    let keyIndicators: [String]
 }
 
 // MARK: - Accidental Diminisher Behaviors
@@ -42,4 +50,6 @@ struct AccidentalDiminisherBehavior: Behavior {
     let examples: [String]
     let implications: String
     let improvementTips: [String]
+    let signalPhrases: [String]
+    let keyIndicators: [String]
 }

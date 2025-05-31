@@ -71,7 +71,7 @@ final class TranscriptionViewModel: ObservableObject {
                 let result = try await localLLMService.behavioralAnalyze(text: transcript)
                 summary = result
             } catch {
-                summary = "[Behavioural analysis failed: \(error.localizedDescription)]"
+                summary = "[Enhanced behavioural analysis failed: \(error.localizedDescription)]"
             }
             isAnalyzing = false
         }

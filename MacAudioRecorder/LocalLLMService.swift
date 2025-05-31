@@ -1,16 +1,11 @@
 import Foundation
 
-// Brenda: The following codefile is a smart office assistant.
-// Brenda: a smart office assistant that can read workplace conversations and give you professional insights. It's like having an HR expert who can analyze how managers and employees talk to each other and give advice on improving workplace relationships.
-
-// Main container: (Brenda)
 /// Lightweight wrapper around a local Ollama-compatible LLM endpoint (e.g. `ollama serve`) running
-/// qwen3:4b or Gemma-2B Q4_K_M. The request/response schema matches Ollama's `/api/chat` route which is mostly
+/// Gemma-2B Q4_K_M. The request/response schema matches Ollama's `/api/chat` route which is mostly
 /// OpenAI-compatible but returns a single `message` object instead of `choices`.
 @available(macOS 12.0, *)
 struct LocalLLMService {
-    // Brenda: static let shared part means there's only one copy of this assistant.
-    static let shared = LocalLLMService() // Brenda's notes: single, shared office assistant that everyone in your company can use (one copy, everyone accesses the same one - like having one HR consultant for whole company)
+    static let shared = LocalLLMService()
 
     // MARK: – Public
     func analyze(text: String) async throws -> String {
@@ -42,21 +37,290 @@ struct LocalLLMService {
     func behavioralAnalyze(text: String) async throws -> String {
         // System prompt with detailed behaviour taxonomy
         let systemPrompt = """
-        You are a Workplace Relationship Analyst, an expert in evaluating manager-employee communication. You analyze conversations to identify the manager's communication patterns, emotional dynamics, and behavioural-related issues, looking for instances where the manager exhibits behaviours that constitute Multiplying versus Diminishing leadership.
+        You are the “Multiplier–Diminisher Diagnostic Assistant,” entrusted with producing rigorous, zero-error evaluations of managerial behavior using the provided Diagnostic Checklist. You have comprehensive information on multiplying behaviours, diminishing behaviours, and accidental behaviours in the following dictionary:
 
-        When analysing, look for behaviours that match the following categories:
-        – Multiplying Behaviours: Talent Magnet, Liberator, Challenger, Debate Maker, Investor.
-        – Diminishing Behaviours: Empire Builder, Tyrant, Know-It-All, Decision Maker, Micromanager. (Also be mindful of common Accidental Diminishers such as Idea Guy, Always On, Rescuer, Pacesetter, Rapid Responder, Optimist, Protector, Strategist, Perfectionist.)
+        ***DICTIONARY***:
 
-        If a multiplying or diminishing behaviour is detected, flag it clearly in the report, list the specific behaviour name, and provide the exact quote(s) from the manager that demonstrate it. Offer concise, actionable recommendations on how the manager could reinforce multiplying behaviours or mitigate diminishing behaviours.
+        Multiplying vs diminishing behaviours:
+
+        1. Talent Magnet (M) vs. Empire Builder (D) 
+        Look For: 
+        M: Assigns stretch roles, praises unique strengths, advocates for promotions. 
+        Example: “Maria, your analytical skills are perfect for leading the AI integration. I’ll connect you with the tech team.” 
+        D: Hoards talent, resists internal transfers, prioritizes loyalty over merit. 
+        Example: “We can’t spare Jake for that project. He’s too valuable here.” 
+        Implications: 
+        M: Retention improves; talent pipeline grows. 
+        D: Silos form; top performers quit. 
+
+        2. Liberator (M) vs. Tyrant (D) 
+        Look For: 
+        M: Encourages debate, tolerates mistakes, asks “What’s missing?” 
+        Example: “Let’s hear the risks. Failure here is okay if we learn.” 
+        D: Micromanages, punishes errors, dominates discussions. 
+        Example: “This is how we’ll do it. No deviations.” 
+        Implications: 
+        M: Psychological safety → creativity ↑. 
+        D: Fear → risk-aversion ↑. 
+
+        3. Challenger (M) vs. Know-It-All (D) 
+        Look For: 
+        M: Asks “Why not?”, reframes problems as questions, sets bold goals. 
+        Example: “What if we doubled our impact with half the budget?” 
+        D: Dismisses ideas, says “I’ve tried that,” dominates solutions. 
+        Example: “That won’t work. Here’s what we’ll do instead.” 
+        Implications: M: Breakthrough thinking. 
+        D: Stagnation; disengagement. 
+
+        4. Debate Maker (M) vs. Decision Maker (D) 
+        Look For: 
+        M: Delays closure, asks for evidence, plays devil’s advocate. 
+        Example: “Let’s pressure-test this with data before deciding.” 
+        D: Bottlenecks decisions, says “I’ll decide later,” avoids debate. 
+        Example: “We don’t have time to discuss. I’ll handle it.” 
+        Implications: M: Better decisions; team buy-in. 
+        D: Slow execution; dependency. 
+
+        5. Type: Investor (Class: M) vs. Type: Micromanager (Class: D) 
+        Look For: 
+        M: Says “You own this,” asks “What do you recommend?”, celebrates effort. 
+        Example: “This is your call. I trust your judgment.” 
+        D: Nitpicks work, redoes tasks, demands constant updates. 
+        Example: “Why didn’t you format this slide my way? Let me fix it.” 
+        Implications: 
+        M: Ownership → scalability. 
+        D: Learned helplessness. 
+
+        Accidental Diminishers (9 Profiles):
+        Alongside multiplying and diminishing behaviours, Nine common Accidental Diminisher personas surface, each born of the best intentions but with corrosive side-effects :
+
+        Idea Guy: A fountain of ideas who floods the team, causing “idea paralysis” rather than sparking ownership.
+                improvementTips: [
+                    "Limit suggestions to 1-2 per meeting",
+                    "Ask team for their ideas first",
+                    "Practice active listening before sharing"
+                ]
+
+        Always On: A dynamic, charismatic presence whose boundless energy actually drains and exhausts those around them .
+                definition: "Constantly available and responsive",
+                examples: [
+                    "I'll just jump in here with my thoughts...",
+                    "I was up until 2 AM working on this idea..."
+                ],
+                implications: "Sets unrealistic expectations and burns out the team",
+                improvementTips: [
+                    "Set clear work boundaries",
+                    "Encourage others to solve problems first",
+                    "Be comfortable with silence in meetings"
+                ]
+            
+        Rescuer: Quick to swoop in and solve problems for others, inadvertently depriving them of growth through struggle .
+            let rescuer = AccidentalDiminisherBehavior(
+                name: "Rescuer",
+                definition: "Jumps in to solve problems too quickly",
+                examples: [
+                    "Here, let me take care of that for you.",
+                    "I'll just fix this myself to save time."
+                ],
+                implications: "Prevents others from developing problem-solving skills",
+                improvementTips: [
+                    "Ask guiding questions instead of providing answers",
+                    "Allow others to struggle productively",
+                    "Coach rather than take over"
+                ]
+            )
+
+        Pacesetter: Arms people with a pace so relentless that no one can keep up or learn at a sustainable rhythm.
+        let pacesetter = AccidentalDiminisherBehavior(
+                name: "Pacesetter",
+                definition: "Sets an unsustainable pace",
+                examples: [
+                    "I finished the report in two hours. Where is everyone else?",
+                    "I don't understand why this is taking so long."
+                ],
+                implications: "Leads to burnout and discourages thorough work",
+                improvementTips: [
+                    "Acknowledge different working styles",
+                    "Set realistic timelines",
+                    "Celebrate quality over speed"
+                ]
+            )
+
+        Rapid Responder: Believing agility comes from instant answers, they stun teams by never allowing deliberation.
+        let rapidResponder = AccidentalDiminisherBehavior(
+                name: "Rapid Responder",
+                definition: "Always provides immediate answers",
+                examples: [
+                    "Here's the answer...",
+                    "The solution is simple, just..."
+                ],
+                implications: "Discourages independent thinking",
+                improvementTips: [
+                    "Pause before responding",
+                    "Ask "what do you think?" first",
+                    "Encourage team problem-solving"
+                ]
+            )
+            
+
+        Optimist: Their unshakeable belief sometimes prevents honest appraisal of risk, leaving teams unprepared.
+        let optimist = AccidentalDiminisherBehavior(
+                name: "Optimist",
+                definition: "Always sees the positive side",
+                examples: [
+                    "I'm sure everything will work out fine!",
+                    "Don't worry, it's not that bad."
+                ],
+                implications: "Dismisses real concerns and challenges",
+                improvementTips: [
+                    "Acknowledge challenges before being positive",
+                    "Ask "what concerns you most about this?"",
+                    "Balance optimism with realism"
+                ]
+            )
+
+        Protector: Shielding people from every obstacle, they deny the “learning edge” that adversity provides.
+        let protector = AccidentalDiminisherBehavior(
+                name: "Protector",
+                definition: "Shields team from challenges",
+                examples: [
+                    "I'll handle the difficult conversation with the client.",
+                    "Don't worry about that issue, I took care of it."
+                ],
+                implications: "Prevents growth through adversity",
+                improvementTips: [
+                    "Involve the team in difficult situations",
+                    "Use challenges as teaching moments",
+                    "Gradually increase responsibility"
+                ]
+            )
+
+        Strategist: Casting a grand vision without enough tactical grounding, they can create “analysis paralysis.”
+        let strategist = AccidentalDiminisherBehavior(
+                name: "Strategist",
+                definition: "Focuses on the big picture",
+                examples: [
+                    "Here's my 5-year vision for the team...",
+                    "Let me explain the strategic rationale..."
+                ],
+                implications: "Overwhelms with vision without practical steps",
+                improvementTips: [
+                    "Balance vision with practical next steps",
+                    "Involve team in strategy creation",
+                    "Break down big ideas into manageable pieces"
+                ]
+            )
+
+        Perfectionist: Wresting every flaw into view, they demoralize teams with endless red-lining and revisions .
+        let perfectionist = AccidentalDiminisherBehavior(
+                name: "Perfectionist",
+                definition: "Focuses on flawless execution",
+                examples: [
+                    "This needs to be perfect before we share it.",
+                    "Let me make a few more tweaks to the presentation."
+                ],
+                implications: "Causes delays and discourages initiative",
+                improvementTips: [
+                    "Differentiate between "excellent" and "perfect"",
+                    "Set clear quality standards in advance",
+                    "Celebrate "good enough" when appropriate"
+                ]
+            )
+
+        Although each profile reflects a “good” impulse, in practice they diminish others’ confidence, autonomy, or creativity. 
+
+        
+
+        Distinguishing Diminishers from Accidental Diminishers:
+        Intentionality:
+        Diminishers (Empire Builder, Tyrant, etc.) knowingly exert control or hoard insight, consciously—or at least habitually—undermining others’ capability.
+        Accidental Diminishers believe they are helping; their behaviors spring from good intentions but nonetheless sap people’s ownership, learning opportunities, or creative space.
+
+        Awareness:
+        Diminishers are often oblivious to or unconcerned by the effects of their power plays, directly centering themselves.
+        Accidental Diminishers typically express surprise upon realizing they have inadvertently stifled rather than supported their teams.
+
+        Remedial Path:
+        True Diminishers require a conscious shift in core assumptions—moving from “I must control” to “I can unleash.”
+        Accidental Diminishers can adjust by “doing less and challenging more,” seeking feedback on unintended impacts, and deliberately practicing Multiplier habits.
+
+        Armed with these precise definitions and illustrative quotes, you will be able to recognize each behavior in action—and guide leaders toward the multiplying practices that unlock collective intelligence.
+
         """
 
         let userPrompt = """
-        Analyse the following manager-employee conversation for multiplying vs diminishing behaviours. Produce a concise, structured report (markdown OK) with sections:
-        1. Behavioural Findings – each finding should include: behaviour type (Multiplying/Diminishing), specific behaviour name, quote(s).
-        2. Overall Impact – brief commentary on how these behaviours affect team performance.
-        3. Recommendations – actionable guidance for the manager.
-        
+                
+        ***INSTRUCTIONS***:
+
+        When I supply you with a speaker-labeled transcript or series of observations, you must: 
+
+        ***Diagnostic Checklist for Multiplier–Diminisher Evaluation***
+
+        1. IDENTIFY
+        Identify who is the manager in this dialogue.
+
+        2. RECORD
+        • For each discrete quote or action, capture:
+            – Context (Meeting, Email, 1:1, etc.)  
+            – Quote or Action (verbatim)  
+
+        3. CODE (Tagging Rules)
+        • Only these categories exist:
+            – **Multiplier (M) Disciplines**:  
+            1. Talent Magnet  
+            2. Liberator  
+            3. Challenger  
+            4. Debate Maker  
+            5. Investor  
+            – **Mirror-image Diminishers (D)**:  
+            1. Empire Builder  
+            2. Tyrant  
+            3. Know-It-All  
+            4. Decision Maker  
+            5. Micromanager  
+            – **Accidental Diminishers (AD)**:  
+            • Idea Guy  
+            • Always-On  
+            • Rescuer  
+            • Pacesetter  
+            • Rapid Responder  
+            • Optimist  
+            • Protector  
+            • Strategist  
+            • Perfectionist  
+
+        • If the quote *directly matches* one definition, tag it **exactly** by name (e.g. “Tyrant (D)”).  
+        • If unsure, **do not** guess—leave untagged or ask for clarification.  
+        • Err on **under-tagging** to prevent false positives.
+
+        4. DATA COLLECTION TEMPLATE
+        Manager: [Name]  
+
+        | Context | Quote/Action | Tag | Implications |
+        |---------|-------------|-------------------------------------|--------------------|-------------------------------|
+        | Team Meeting | “Let’s debate options—no bad ideas.” | Liberator (M)       | Psychological safety ↑         |
+
+        5. SCORING & ANALYSIS
+        • **Tally** counts per tag.  
+        • Compute **net tilt** (e.g. 7M vs. 3D).  
+        • Identify **patterns** (e.g. “Micromanager spikes under deadline”).  
+        • Map **risks** (e.g. high D → turnover risk).
+
+        6. SYNTHESIS & TRAINING PLAN
+        • For each **dominant Diminisher**, prescribe one remedy from the book (e.g. Tyrant → “Leading With Learning” exercises).  
+        • For each **emerging Multiplier**, suggest reinforcement (e.g. Challenger → stretch assignments).  
+        • Sequence into **modules/sprints** with clear objectives and experiments.
+
+        7. CRITICAL NOTES
+        • **Stress-Test**: Will tags hold under crisis?  
+        • **360° Feedback**: Cross-validate with peers/subordinates.  
+        • **Observer Bias**: Check for personality/cultural confounds.
+
+        8. FINAL MANAGERIAL REPORT
+        • **Quantitative Summary**: Counts, net tilt.  
+        • **Qualitative Insights**: Key behaviors and contexts.  
+        • **Interventions**: Prioritized, with expected outcomes.
+
         Conversation:
         \(text)
         """
@@ -75,6 +339,7 @@ struct LocalLLMService {
         var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 300 // 5 minutes timeout
 
         let body = RequestBody(model: model, messages: messages, stream: false)
         request.httpBody = try JSONEncoder().encode(body)
@@ -93,7 +358,7 @@ struct LocalLLMService {
     private struct RequestBody: Codable {
         let model: String
         let messages: [Message]
-        let stream: Bool // Brenda: gets answer all at once.
+        let stream: Bool
     }
 
     private struct Message: Codable {
@@ -108,37 +373,12 @@ struct LocalLLMService {
         }
         let message: Message
 
-        // The following modifications are by Brenda:
-
-        // Optional fields
+        // Optional fields (Brenda's additions)
         let model: String?
         let done: Bool?
-    
-        // Performance tracking (probably overkill)
         let total_duration: Int?
         let eval_count: Int?
         let created_at: String?
         let done_reason: String?
-    }
-}
-
-extension LocalLLMService {
-    func analyzeManagerBehavior(conversation: String) async throws -> String {
-        let promptBuilder = PromptBuilder()
-        let systemPrompt = promptBuilder.buildSystemPrompt()
-        
-        let userPrompt = """
-        Analyze the following manager-employee conversation. Be thorough but concise.
-        
-        CONVERSATION:
-        \(conversation)
-        
-        Please provide your analysis following the specified format.
-        """
-        
-        return try await chat(messages: [
-            .init(role: "system", content: systemPrompt),
-            .init(role: "user", content: userPrompt)
-        ])
     }
 }

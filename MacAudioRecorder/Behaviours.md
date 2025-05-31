@@ -1,5 +1,7 @@
 import Foundation
 
+import Foundation
+
 struct BehaviorCatalog {
     static let shared = BehaviorCatalog()
     
