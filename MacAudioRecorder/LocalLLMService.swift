@@ -57,11 +57,13 @@ struct LocalLLMService {
         Look For: 
         M: Encourages debate, tolerates mistakes, asks “What’s missing?” 
         Example: “Let’s hear the risks. Failure here is okay if we learn.” 
-        D: Micromanages, punishes errors, dominates discussions. 
-        Example: “This is how we’ll do it. No deviations.” 
+        D: Rules by fear and judgment, punishing errors and dominating discussions. 
+        Example: “This is how we’ll do it. No deviations are tolerated.”
         Implications: 
         M: Psychological safety → creativity ↑. 
-        D: Fear → risk-aversion ↑. 
+        D: Fear → risk-aversion ↑ (also: people stop speaking up or suggesting alternatives). 
+        Improvement Tip for Tyrant (D): “Ask ‘What do you think?’ before issuing a directive.”  
+
 
         3. Challenger (M) vs. Know-It-All (D) 
         Look For: 
@@ -69,7 +71,8 @@ struct LocalLLMService {
         Example: “What if we doubled our impact with half the budget?” 
         D: Dismisses ideas, says “I’ve tried that,” dominates solutions. 
         Example: “That won’t work. Here’s what we’ll do instead.” 
-        Implications: M: Breakthrough thinking. 
+        Implications: 
+        M: Breakthrough thinking. 
         D: Stagnation; disengagement. 
 
         4. Debate Maker (M) vs. Decision Maker (D) 
@@ -257,7 +260,7 @@ struct LocalLLMService {
         ***Diagnostic Checklist for Multiplier–Diminisher Evaluation***
 
         1. IDENTIFY
-        Identify who is the manager in this dialogue.
+        Identify who is the manager in this dialogue (note: this may also be the unnamed speaker).
 
         2. RECORD
         • For each discrete quote or action, capture:
