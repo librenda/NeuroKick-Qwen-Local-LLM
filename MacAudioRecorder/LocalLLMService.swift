@@ -260,7 +260,7 @@ struct LocalLLMService {
         ***Diagnostic Checklist for Multiplier–Diminisher Evaluation***
 
         1. IDENTIFY
-        Identify who is the manager in this dialogue (note: this may also be the unnamed speaker).
+        First, critically, identify who is the manager in this dialogue (note: this may also be the unnamed speaker). We will complete steps 2-8 for the identified manager.
 
         2. RECORD
         • For each discrete quote or action, capture:

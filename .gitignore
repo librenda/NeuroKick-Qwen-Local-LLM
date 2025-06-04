@@ -44,3 +44,6 @@ Pods/
 
 # Logs
 *.log
+*.mov
+Tests-Brenda/MacAudioRecorderApp-result-tests/**/*.mov
+Tests-Brenda/MacAudioRecorderApp-result-tests/**/*.mov
