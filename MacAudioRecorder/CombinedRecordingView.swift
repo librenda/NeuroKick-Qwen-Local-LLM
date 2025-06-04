@@ -261,9 +261,10 @@ struct CombinedRecordingView: View {
                     VStack(spacing: 8) {
                         ScrollView {
                             Text(viewModel.summary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding()
-                                .foregroundColor(.black)
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                            .foregroundColor(.black)
                         }
                         .frame(height: 150)
                         .glassEffect()
