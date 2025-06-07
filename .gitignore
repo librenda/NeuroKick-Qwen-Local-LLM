@@ -47,3 +47,5 @@ Pods/
 *.mov
 Tests-Brenda/MacAudioRecorderApp-result-tests/**/*.mov
 Tests-Brenda/MacAudioRecorderApp-result-tests/**/*.mov
+
+/generated/prisma
