@@ -1,3 +1,4 @@
 *.bin filter=lfs diff=lfs merge=lfs -text
 *.mov filter=lfs diff=lfs merge=lfs -text
 *.mov filter=lfs diff=lfs merge=lfs -text
+MacAudioRecorder/ggml-base.en.bin filter=lfs diff=lfs merge=lfs -text
