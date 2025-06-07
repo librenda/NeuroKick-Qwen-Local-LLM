@@ -1,7 +1,7 @@
 ---
-description: Follow these steps to get things done 10x better (for reasoning and coding).
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 Follow these steps to get things done 10x better:
     - This file provides instructions and YOU SHOULD NOT ATTEMPT TO EDIT IT

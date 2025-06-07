@@ -268,6 +268,7 @@ struct LocalLLMService {
             – Quote or Action (verbatim)  
 
         3. CODE (Tagging Rules)
+        • Do not falsely claim speaker behaviour; analyze surrounding context if unsure. False positives (identification of bahaviours that do not exist, or over tagging) are not allowed.
         • Only these categories exist:
             – **Multiplier (M) Disciplines**:  
             1. Talent Magnet  

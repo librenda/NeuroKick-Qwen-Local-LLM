@@ -1,4 +1,7 @@
 
+Notes: the behavioural analyze feature consists of a Meeting Diagnostics Checklist (to be used per meeting).
+
+
 I'll help you create a comprehensive summary using the @summary approach. Let me first examine the project structure and then write the summary.
 
 Ran tool
