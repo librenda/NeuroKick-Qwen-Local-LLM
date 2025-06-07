@@ -1,15 +1,113 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Meeting {
+  id               String             @id @default(cuid())
+  timestamp        DateTime           @default(now())
+  duration         Int
+  audioPath        String
+  status           String             @default("recording")
+  
+  // Enhanced relationships
+  analysis         Analysis?
+  metrics          MeetingMetric[]
+  transcription    Transcription?
+  behaviorAnalysis BehaviorAnalysis?
+  summary          Summary?
+
+  @@map("meetings")
+}
+
+model Transcription {
+  id         String   @id @default(cuid())
+  meetingId  String   @unique
+  text       String   @db.Text  // Full transcript can be very long
+  confidence Float
+  timestamp  DateTime @default(now())
+  meeting    Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@map("transcriptions")
+}
+
+model Analysis {
+  id        String   @id @default(cuid())
+  meetingId String   @unique
+  summary   String   @db.Text
+  sentiment Float
+  timestamp DateTime @default(now())
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@map("analyses")
+}
+
+model Summary {
+  id        String   @id @default(cuid())
+  meetingId String   @unique
+  content   String   @db.Text
+  timestamp DateTime @default(now())
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@map("summaries")
+}
+
+// NEW: Behavioral Analysis Storage
+model BehaviorAnalysis {
+  id          String   @id @default(cuid())
+  meetingId   String   @unique
+  managerName String?
+  
+  // Behavior counts
+  multiplierCount          Int @default(0)
+  diminisherCount          Int @default(0)
+  accidentalDiminisherCount Int @default(0)
+  
+  // Full analysis data (JSON)
+  analysisData             Json    // Stores the complete LLM output
+  trainingRecommendations  String? @db.Text
+  keyInsights             String? @db.Text
+  
+  timestamp DateTime @default(now())
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  
+  // Individual behavior instances
+  behaviors BehaviorInstance[]
+
+  @@map("behavior_analyses")
+}
+
+// NEW: Individual behavior instances with timestamps
+model BehaviorInstance {
+  id               String   @id @default(cuid())
+  behaviorAnalysisId String
+  
+  context          String   // Meeting context where behavior occurred
+  quote            String   @db.Text // Actual quote/action
+  behaviorType     String   // "MULTIPLIER", "DIMINISHER", "ACCIDENTAL_DIMINISHER"
+  specificBehavior String   // "Talent Magnet", "Tyrant", "Idea Guy", etc.
+  implications     String   @db.Text
+  
+  timestamp        DateTime @default(now())
+  behaviorAnalysis BehaviorAnalysis @relation(fields: [behaviorAnalysisId], references: [id], onDelete: Cascade)
+
+  @@map("behavior_instances")
+}
+
+model MeetingMetric {
+  timestamp    DateTime
+  meetingId    String
+  sentiment    Float
+  wordCount    Int
+  speakingRate Float
+  energy       Float
+  confidence   Float
+  meeting      Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@id([timestamp, meetingId])
+  @@map("meeting_metrics")
 }
